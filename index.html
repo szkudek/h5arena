@@ -89,6 +89,15 @@ html.lock,html.lock body{overflow:hidden}
 .li{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd)}.li span{display:block;font-size:13px;color:var(--mu)}
 .ad{display:flex;gap:10px;margin-top:18px}.ad .btn{flex:1}
 .sbar{display:flex;gap:8px;padding:6px 8px 0;flex:none}.sbar button{flex:1;font-weight:600;border-color:#c9a23c}.sbar b{background:var(--ac);color:var(--bg);border-radius:99px;padding:0 7px;margin-left:4px}.tabs{display:flex;gap:6px;margin-bottom:10px}.tabs button{flex:1}.tabs .on{background:var(--ac);color:var(--bg);border-color:var(--ac);font-weight:600}.cm{padding:10px 0;border-bottom:1px solid var(--ln)}.cm button:disabled{opacity:.5}
+
+@media (min-width:900px) and (min-aspect-ratio:5/4){
+#app.on{display:grid;grid-template-columns:minmax(0,1fr) 400px;grid-template-rows:auto auto minmax(0,1fr)}
+#app.on.fs{grid-template-columns:minmax(0,1fr)}
+#app .top{grid-column:2;grid-row:1}#app .sbar{grid-column:2;grid-row:2;padding:8px}#app #sheet{grid-column:2;grid-row:3;max-height:none;min-height:0}
+#app #stage{grid-column:1;grid-row:1/4;margin:10px;min-height:0}
+#app .top #chips{flex-wrap:wrap;overflow:visible}
+#pop{left:calc((100% - 400px)/2)}#app.fs~#pop{left:50%}
+}
 </style></head><body><div id="site"><nav class="nav"><a class="brand" href="#/">⚔ Arena<b>Toolkit</b></a><div class="links"><a href="#/">Start</a><a href="#/wheel">Skillwheel</a><a href="#/heroes">Bohaterowie</a><a href="#/art">Artefakty</a><a href="#/units">Jednostki</a></div></nav>
 <section class="view" id="v-home"><div class="wrap"><div class="hero"><span class="eye">Heroes of Might and Magic V · Arena 3.2.5</span><h1>Wszystko do Areny w jednym miejscu</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p><div class="cta"><a class="btn pr" href="#/wheel">Otwórz Skillwheel</a><a class="btn" href="#/heroes">Przeglądaj bohaterów</a></div></div>
 <div class="cards"><a class="fc" href="#/wheel"><div class="fa" id="fa-w"></div><h3>Skillwheel</h3><p>Zaplanuj build bohatera na interaktywnym kole umiejętności i zapisuj setupy.</p></a>
@@ -150,6 +159,9 @@ function build(){const R=races[st.r];svg.innerHTML="";nodeEls={};edgeEls=[];
  vb={x:0,y:-50,w:640,h:670};fit();paint()}
 function fit(){const r=svg.getBoundingClientRect(),a=r.width/r.height;let w=720,h=w/a;if(h<720){h=720;w=h*a}
  vb={x:317-w/2,y:315-h/2,w,h};window.vb0={w,h};setVB()}
+function refit(){const r=svg.getBoundingClientRect();if(!r.width||!r.height)return;const a=r.width/r.height;let w=720,h=w/a;if(h<720){h=720;w=h*a}
+ const was=!window.vb0||vb.w>=window.vb0.w-1;window.vb0={w,h};
+ if(was)vb={x:317-w/2,y:315-h/2,w,h};else{vb.w=Math.min(vb.w,w);vb.h=vb.w*r.height/r.width}setVB()}
 function setVB(){const cl=(v,z,c)=>z>=720?c-z/2:Math.min(Math.max(v,c-360),c+360-z);vb.x=cl(vb.x,vb.w,317);vb.y=cl(vb.y,vb.h,315);svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);svg.style.setProperty("--lf",(9*vb.w/(svg.getBoundingClientRect().width||380))+"px");svg.classList.toggle("z",720/vb.w>=1.4)}
 function paint(){const m=M();const an=sel?new Set(A[st.r][sel]):null,de=sel?new Set(DS[st.r][sel]):null;
  for(const id in nodeEls){const s=status(+id);nodeEls[id].setAttribute("class","n s"+s+(sel==id?" sel":""))}
@@ -212,7 +224,7 @@ function modal(){const o=$("#modal");st.saved=st.saved||[];o.hidden=false;
   if(l!==undefined){const x=st.saved[+l];st.r=x.r;st.h[x.r]=x.h;st.m[x.r+"_"+x.h]=x.m.slice();st.cheat[x.r]=false;sel=null;o.hidden=true;heroSel();build()}};
  $("#ex").onclick=async()=>{const t=JSON.stringify(st.saved);try{await navigator.clipboard.writeText(t);alert("Skopiowano.")}catch(e){prompt("Skopiuj:",t)}};
  $("#im").onclick=()=>{try{const a=JSON.parse(prompt("Wklej JSON setupów:")||"[]");if(Array.isArray(a)){st.saved=st.saved.concat(a.filter(x=>x&&x.m&&heroes[x.r]));re()}}catch(e){alert("Niepoprawny JSON.")}}}
-addEventListener("resize",()=>{if(window.__w)fit()});window.initWheel=()=>{if(!window.__w){window.__w=1;init();$("#sb").onclick=modal}else if(window.__dirty){sel=null;heroSel();build()}window.__dirty=0;fit()};
+addEventListener("resize",()=>{if(window.__w)refit()});window.initWheel=()=>{if(!window.__w){window.__w=1;init();$("#sb").onclick=modal;if(window.ResizeObserver)new ResizeObserver(refit).observe($("#stage"))}else if(window.__dirty){sel=null;heroSel();build()}window.__dirty=0;fit()};
 
 /* ===== STRONA: routing, widoki, szkielet danych ===== */
 const FAC=["Twierdza","Inferno","Przystań","Nekropolia","Las","Forteca","Loch","Akademia"];
