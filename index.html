@@ -149,8 +149,8 @@ function build(){const R=races[st.r];svg.innerHTML="";nodeEls={};edgeEls=[];
   g.append(n);nodeEls[id]=n}
  vb={x:0,y:-50,w:640,h:670};fit();paint()}
 function fit(){const r=svg.getBoundingClientRect(),a=r.width/r.height;let w=720,h=w/a;if(h<720){h=720;w=h*a}
- vb={x:317-w/2,y:315-h/2,w,h};setVB()}
-function setVB(){svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);svg.style.setProperty("--lf",(9*vb.w/(svg.getBoundingClientRect().width||380))+"px");svg.classList.toggle("z",720/vb.w>=1.4)}
+ vb={x:317-w/2,y:315-h/2,w,h};window.vb0={w,h};setVB()}
+function setVB(){const cl=(v,z,c)=>z>=720?c-z/2:Math.min(Math.max(v,c-360),c+360-z);vb.x=cl(vb.x,vb.w,317);vb.y=cl(vb.y,vb.h,315);svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);svg.style.setProperty("--lf",(9*vb.w/(svg.getBoundingClientRect().width||380))+"px");svg.classList.toggle("z",720/vb.w>=1.4)}
 function paint(){const m=M();const an=sel?new Set(A[st.r][sel]):null,de=sel?new Set(DS[st.r][sel]):null;
  for(const id in nodeEls){const s=status(+id);nodeEls[id].setAttribute("class","n s"+s+(sel==id?" sel":""))}
  for(const l of edgeEls){const p=+l.dataset.p,c=+l.dataset.c;let k="e"+(m.includes(p)&&m.includes(c)?" p":"");
@@ -199,7 +199,7 @@ function init(){svg=$("svg");$("#chips").innerHTML=RN.slice(1).map((n,i)=>`<butt
 const dist=()=>{const p=[...ptr.values()];return Math.hypot(p[0][0]-p[1][0],p[0][1]-p[1][1])};
 const mid=()=>{const p=[...ptr.values()];return [(p[0][0]+p[1][0])/2,(p[0][1]+p[1][1])/2]};
 function zoom(f,c){const r=svg.getBoundingClientRect();c=c||[r.left+r.width/2,r.top+r.height/2];
- const nw=Math.min(800,Math.max(70,vb.w*f)),k=nw/vb.w,px=(c[0]-r.left)/r.width,py=(c[1]-r.top)/r.height;
+ const nw=Math.min(window.vb0.w,Math.max(70,vb.w*f)),k=nw/vb.w,px=(c[0]-r.left)/r.width,py=(c[1]-r.top)/r.height;
  vb.x+=vb.w*px*(1-k);vb.y+=vb.h*py*(1-k);vb.w=nw;vb.h*=k;setVB()}
 function modal(){const o=$("#modal");st.saved=st.saved||[];o.hidden=false;
  const list=()=>st.saved.map((x,i)=>`<div class=sv><div><b>${x.n}</b><div class=req>${RN[x.r]} · ${heroes[x.r][x.h][0]} · poz. ${x.m.length-heroes[x.r][x.h][3].length+1}</div></div><div class=row><button data-l=${i}>Wczytaj</button><button data-d=${i} class=rm>Usuń</button></div></div>`).join("")||"<div class=req>Brak zapisanych setupów.</div>";
