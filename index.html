@@ -157,12 +157,12 @@ function build(){const R=races[st.r];svg.innerHTML="";nodeEls={};edgeEls=[];
   const lb=mk("text",{class:"lb",y:32*s+7});lb.textContent=db[id][1];n.append(lb);
   g.append(n);nodeEls[id]=n}
  vb={x:0,y:-50,w:640,h:670};fit();paint()}
-function fit(){const r=svg.getBoundingClientRect(),a=r.width/r.height;let w=720,h=w/a;if(h<720){h=720;w=h*a}
- vb={x:317-w/2,y:315-h/2,w,h};window.vb0={w,h};setVB()}
-function refit(){const r=svg.getBoundingClientRect();if(!r.width||!r.height)return;const a=r.width/r.height;let w=720,h=w/a;if(h<720){h=720;w=h*a}
+function fit(){const r=svg.getBoundingClientRect(),a=r.width/r.height;let w=720,h=w/a;if(h<750){h=750;w=h*a}
+ vb={x:317-w/2,y:300-h/2,w,h};window.vb0={w,h};setVB()}
+function refit(){const r=svg.getBoundingClientRect();if(!r.width||!r.height)return;const a=r.width/r.height;let w=720,h=w/a;if(h<750){h=750;w=h*a}
  const was=!window.vb0||vb.w>=window.vb0.w-1;window.vb0={w,h};
- if(was)vb={x:317-w/2,y:315-h/2,w,h};else{vb.w=Math.min(vb.w,w);vb.h=vb.w*r.height/r.width}setVB()}
-function setVB(){const cl=(v,z,c)=>z>=720?c-z/2:Math.min(Math.max(v,c-360),c+360-z);vb.x=cl(vb.x,vb.w,317);vb.y=cl(vb.y,vb.h,315);svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);svg.style.setProperty("--lf",(9*vb.w/(svg.getBoundingClientRect().width||380))+"px");svg.classList.toggle("z",720/vb.w>=1.4)}
+ if(was)vb={x:317-w/2,y:300-h/2,w,h};else{vb.w=Math.min(vb.w,w);vb.h=vb.w*r.height/r.width}setVB()}
+function setVB(){const cl=(v,z,lo,hi)=>z>=hi-lo?(lo+hi)/2-z/2:Math.min(Math.max(v,lo),hi-z);vb.x=cl(vb.x,vb.w,-43,677);vb.y=cl(vb.y,vb.h,-75,675);svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);svg.style.setProperty("--lf",(9*vb.w/(svg.getBoundingClientRect().width||380))+"px");svg.classList.toggle("z",720/vb.w>=1.4)}
 function paint(){const m=M();const an=sel?new Set(A[st.r][sel]):null,de=sel?new Set(DS[st.r][sel]):null;
  for(const id in nodeEls){const s=status(+id);nodeEls[id].setAttribute("class","n s"+s+(sel==id?" sel":""))}
  for(const l of edgeEls){const p=+l.dataset.p,c=+l.dataset.c;let k="e"+(m.includes(p)&&m.includes(c)?" p":"");
